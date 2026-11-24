@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Riamo GPS World">
+  <defs>
+    <linearGradient id="ice" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".5" stop-color="#bfeaff"/>
+      <stop offset="1" stop-color="#5fbdf0"/>
+    </linearGradient>
+    <linearGradient id="letters" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d6fb0"/>
+      <stop offset="1" stop-color="#0a2447"/>
+    </linearGradient>
+    <radialGradient id="core" cx=".5" cy=".4" r=".7">
+      <stop offset="0" stop-color="#1b3a6b"/>
+      <stop offset="1" stop-color="#0a1428"/>
+    </radialGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#5bc8ff" flood-opacity=".5"/>
+    </filter>
+    <path id="arcTop" d="M60,200 A140,140 0 0 1 340,200"/>
+    <path id="arcBottom" d="M32,200 A168,168 0 0 0 368,200"/>
+  </defs>
+
+  <g filter="url(#glow)">
+    <circle cx="200" cy="200" r="190" fill="url(#ice)" stroke="#e6f8ff" stroke-width="4"/>
+  </g>
+  <circle cx="200" cy="200" r="178" fill="none" stroke="#ffffff" stroke-opacity=".6" stroke-width="3"/>
+  <path d="M40 150 A170 170 0 0 1 170 32" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" opacity=".85"/>
+  <path d="M330 300 A160 160 0 0 1 250 360" fill="none" stroke="#3aa9e0" stroke-width="6" stroke-linecap="round" opacity=".35"/>
+
+  <circle cx="200" cy="200" r="122" fill="url(#core)" stroke="#e6f8ff" stroke-width="4"/>
+  <g fill="none" stroke="#8fd8ff" stroke-opacity=".35" stroke-width="2">
+    <circle cx="200" cy="200" r="104"/>
+    <ellipse cx="200" cy="200" rx="52" ry="104"/>
+    <line x1="96" y1="200" x2="304" y2="200"/>
+    <path d="M110 150 H290"/>
+    <path d="M110 250 H290"/>
+  </g>
+
+  <path d="M200 282 C200 282 148 224 148 190 A52 52 0 0 1 252 190 C252 224 200 282 200 282 Z" fill="#22d3a6" stroke="#eafff8" stroke-width="4"/>
+  <circle cx="200" cy="190" r="20" fill="#0a1428"/>
+  <circle cx="200" cy="190" r="9" fill="#ffffff"/>
+
+  <g font-family="'Arial Black', Impact, Roboto, 'Segoe UI', sans-serif" font-weight="900" text-anchor="middle">
+    <text font-size="54" letter-spacing="6" fill="url(#letters)" stroke="#ffffff" stroke-width="1.5" paint-order="stroke">
+      <textPath href="#arcTop" startOffset="50%">RIAMO</textPath>
+    </text>
+    <text font-size="33" letter-spacing="5" fill="url(#letters)" stroke="#ffffff" stroke-width="1.2" paint-order="stroke">
+      <textPath href="#arcBottom" startOffset="50%">GPS WORLD</textPath>
+    </text>
+  </g>
+
+  <path d="M46 200 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4z" fill="#22d3a6"/>
+  <path d="M354 200 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4z" fill="#22d3a6"/>
+</svg>

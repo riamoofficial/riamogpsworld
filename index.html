@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Riamo GPS World – Suivi GPS interactif</title>
+  <meta name="description" content="Carte en direct, géorepérage, alertes et rejeu de trajets. Testez la démo dans votre navigateur.">
+  <meta name="theme-color" content="#2f4bff">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Riamo GPS World – Suivi GPS interactif">
+  <meta property="og:description" content="Carte en direct, géorepérage, alertes et rejeu de trajets.">
+  <meta property="og:image" content="logo.svg">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Snowburst+One&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&text=0123456789&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#app">Aller à la démo</a>
+
+  <header class="top">
+    <div class="wrap bar">
+      <a class="brand" href="#top" aria-label="Riamo GPS World, accueil">
+        <img src="logo.svg" alt="" width="28" height="28"><span>Riamo GPS World</span>
+      </a>
+      <nav aria-label="Navigation principale">
+        <a href="#fonctions">Fonctions</a>
+        <a href="#app">Démo</a>
+        <a href="#tarifs">Tarifs</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="eyebrow">Suivi GPS interactif</p>
+          <h1>Gardez un œil sur tout ce qui compte, en temps réel.</h1>
+          <p class="lead">Carte en direct, zones de géorepérage, alertes instantanées et rejeu de trajets. Testez la démo directement dans votre navigateur.</p>
+          <div class="cta">
+            <a class="btn primary" href="#app">Essayer la démo</a>
+            <a class="btn ghost" href="#tarifs">Voir les tarifs</a>
+          </div>
+        </div>
+        <svg class="route" viewBox="0 0 320 220" role="img" aria-label="Exemple de trajet suivi sur une carte">
+          <rect x="1" y="1" width="318" height="218" rx="14" class="route-bg"/>
+          <path class="route-grid" d="M0 70h320M0 140h320M80 0v220M160 0v220M240 0v220"/>
+          <circle cx="215" cy="85" r="52" class="route-zone"/>
+          <path id="rp" class="route-line" d="M30 180C80 190 90 120 140 120S190 60 225 85 280 60 295 30"/>
+          <circle r="7" class="route-dot"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#rp"/></animateMotion></circle>
+        </svg>
+      </div>
+    </section>
+
+    <section class="section" id="fonctions">
+      <div class="wrap">
+        <h2>Fonctions principales</h2>
+        <div class="grid3">
+          <article class="card"><h3>Carte en direct</h3><p>Tous vos appareils sur une carte OpenStreetMap, avec infobulles, statut et batterie.</p></article>
+          <article class="card"><h3>Géorepérage</h3><p>Dessinez des zones circulaires et soyez alerté à chaque entrée ou sortie.</p></article>
+          <article class="card"><h3>Historique et rejeu</h3><p>Rejouez un trajet à la vitesse de votre choix grâce au lecteur intégré.</p></article>
+          <article class="card"><h3>Simulation</h3><p>Faites bouger des appareils virtuels pour tester vos zones et vos alertes sans matériel.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section tint" id="app">
+      <div class="wrap">
+        <h2>Démo interactive</h2>
+        <p class="sub">Tout reste dans votre navigateur : rien n’est envoyé à un serveur.</p>
+
+        <div class="app">
+          <aside class="side">
+            <div class="tools">
+              <input id="search" type="search" placeholder="Rechercher un appareil" aria-label="Rechercher un appareil">
+              <select id="statusFilter" aria-label="Filtrer par statut">
+                <option value="all">Tous les statuts</option>
+                <option value="moving">En mouvement</option>
+                <option value="idle">À l’arrêt</option>
+                <option value="offline">Hors ligne</option>
+              </select>
+            </div>
+            <p class="count"><span id="deviceCount">0</span> appareil(s)</p>
+            <ul id="deviceList" class="devices"></ul>
+            <div class="row">
+              <button id="btnSim" class="btn small primary" type="button" aria-pressed="false">Lancer la simulation</button>
+              <button id="btnLocate" class="btn small ghost" type="button">Ma position</button>
+              <button id="btnReset" class="btn small ghost" type="button">Réinitialiser</button>
+            </div>
+          </aside>
+
+          <div class="stage">
+            <div id="map" role="application" aria-label="Carte des appareils"></div>
+
+            <div class="tabs" role="tablist">
+              <button class="tab on" role="tab" data-tab="zones" aria-selected="true">Zones</button>
+              <button class="tab" role="tab" data-tab="alerts" aria-selected="false">Alertes</button>
+              <button class="tab" role="tab" data-tab="history" aria-selected="false">Historique</button>
+            </div>
+
+            <div class="panel" id="tab-zones" role="tabpanel">
+              <div class="row">
+                <label>Rayon <input id="zoneRadius" type="range" min="100" max="2000" step="50" value="500"> <output id="zoneRadiusOut">500 m</output></label>
+                <button id="btnZone" class="btn small primary" type="button">Ajouter une zone au centre</button>
+              </div>
+              <ul id="zoneList" class="plain"></ul>
+            </div>
+
+            <div class="panel" id="tab-alerts" role="tabpanel" hidden>
+              <ul id="alertList" class="plain"></ul>
+              <button id="btnClearAlerts" class="btn small ghost" type="button">Vider les alertes</button>
+            </div>
+
+            <div class="panel" id="tab-history" role="tabpanel" hidden>
+              <div class="row">
+                <select id="historyDevice" aria-label="Appareil à rejouer"></select>
+                <button id="replayPlay" class="btn small primary" type="button">Lecture</button>
+                <select id="replaySpeed" aria-label="Vitesse de rejeu">
+                  <option value="1">×1</option><option value="4" selected>×4</option><option value="10">×10</option>
+                </select>
+              </div>
+              <input id="replayRange" type="range" min="0" max="0" value="0" aria-label="Position dans le trajet">
+              <p id="replayTime" class="count">Aucun trajet</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="tarifs">
+      <div class="wrap">
+        <h2>Tarifs</h2>
+        <div class="grid3">
+          <article class="card"><h3>Découverte</h3><p class="price">0 €</p><p>3 appareils, historique 24 h, 1 zone.</p></article>
+          <article class="card pick"><h3>Pro</h3><p class="price">19 €<small>/mois</small></p><p>25 appareils, historique 90 jours, zones et alertes illimitées.</p></article>
+          <article class="card"><h3>Entreprise</h3><p class="price">Sur devis</p><p>Flotte illimitée, accès API, assistance dédiée.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section tint" id="contact">
+      <div class="wrap narrow">
+        <h2>Contact</h2>
+        <form id="contactForm" class="form">
+          <label>Nom <input name="name" required autocomplete="name"></label>
+          <label>E-mail <input name="email" type="email" required autocomplete="email"></label>
+          <label>Message <textarea name="message" rows="4" required></textarea></label>
+          <button class="btn primary" type="submit">Envoyer</button>
+          <p class="count">Le bouton ouvre votre application de messagerie.</p>
+        </form>
+        <h3 class="follow">Suivez-nous</h3>
+        <ul class="social">
+          <li><a href="https://www.youtube.com/@Riamogps" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+          <li><a href="https://www.instagram.com/riamogps" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+          <li><a href="https://www.facebook.com/share/19WRNLWLXP/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+          <li><a href="https://www.tiktok.com/@riamo.gps" target="_blank" rel="noopener noreferrer">TikTok</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap bar">
+      <span>© <span id="year">2026</span> Riamo GPS World</span>
+      <ul class="social small" aria-label="Réseaux sociaux">
+        <li><a href="https://www.youtube.com/@Riamogps" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+        <li><a href="https://www.instagram.com/riamogps" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a href="https://www.facebook.com/share/19WRNLWLXP/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+        <li><a href="https://www.tiktok.com/@riamo.gps" target="_blank" rel="noopener noreferrer">TikTok</a></li>
+      </ul>
+      <button id="openLegal" class="link" type="button">Mentions légales et confidentialité</button>
+    </div>
+  </footer>
+
+  <dialog id="legal" aria-labelledby="legalTitle">
+    <div class="dlg">
+      <button id="closeLegal" class="x" type="button" aria-label="Fermer">X</button>
+      <h2 id="legalTitle">Mentions légales</h2>
+      <p><strong>Éditeur :</strong> Riamo GPS World. Les coordonnées complètes de l’éditeur (raison sociale, adresse, contact) sont à renseigner avant la mise en ligne.</p>
+      <p><strong>Hébergement :</strong> Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, États-Unis (Cloudflare Pages).</p>
+      <p><strong>Propriété intellectuelle :</strong> l’ensemble des contenus de ce site (textes, logo, éléments graphiques) est protégé. Toute reproduction sans autorisation est interdite.</p>
+      <h2>Politique de confidentialité</h2>
+      <p>La démo de l’application fonctionne entièrement dans votre navigateur : zones, alertes et historiques sont enregistrés localement (stockage du navigateur) et ne sont pas transmis à un serveur.</p>
+      <p>Le formulaire de contact ouvre votre application de messagerie : les informations saisies ne sont envoyées que lorsque vous validez l’e-mail.</p>
+      <p>La fonction « Ma position » demande l’autorisation de votre navigateur et n’est utilisée que pour centrer la carte. Vous pouvez effacer toutes vos données locales avec le bouton « Réinitialiser ».</p>
+      <p>Le fond de carte est fourni par OpenStreetMap et chargé depuis des serveurs tiers.</p>
+    </div>
+  </dialog>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
