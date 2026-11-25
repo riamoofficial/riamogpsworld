@@ -1,8 +1,8 @@
 /* Service worker Riamo GPS World : fonctionnement hors-ligne de base.
    Changez VERSION à chaque mise à jour du site pour renouveler le cache. */
-const VERSION = 'riamo-v1';
+const VERSION = 'riamo-v1-r22577';
 const CORE = [
-  './', 'index.html', 'styles.css', 'app.js', 'config.js', 'favicon.svg',
+  './', 'index.html', 'styles.css', 'app.js', 'route.js', 'config.js', 'favicon.svg',
   'manifest.webmanifest', 'icon-192.png', 'icon-512.png',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',

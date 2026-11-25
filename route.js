@@ -173,7 +173,7 @@ cat >> route.js <<'EOF'
 
   function startDrive() {
     if (!S.steps.length) return;
-    S.driving = true; panel.style.display = 'none'; fab.style.display = 'none'; banner.style.display = 'block';
+    S.driving = true; panel.style.display = 'none'; fab.style.display = 'none'; banner.style.display = 'block'; try { document.documentElement.requestFullscreen(); } catch (e) {}
     banner.textContent = 'Recherche du signal GPS…';
     $('rg-stop').style.display = 'inline-block';
     try { navigator.wakeLock && navigator.wakeLock.request('screen'); } catch (e) {}
@@ -183,11 +183,11 @@ cat >> route.js <<'EOF'
   }
   function stopDrive() {
     S.driving = false; if (S.watch != null) navigator.geolocation.clearWatch(S.watch); S.watch = null;
-    banner.style.display = 'none'; fab.style.display = 'block'; $('rg-stop').style.display = 'none';
+    banner.style.display = 'none'; fab.style.display = 'block'; $('rg-stop').style.display = 'none'; try { document.exitFullscreen(); } catch (e) {}
   }
 
   function bind() {
-    fab.onclick = function () { panel.style.display = 'block'; };
+    fab.onclick = function () { panel.style.display = 'block'; if (!S.from) locate(function (p) { S.from = p; $('rg-from').value = 'Ma position (GPS)'; }); };
     $('rg-close').onclick = function () { panel.style.display = 'none'; };
     $('rg-me').onclick = function () { locate(function (p) { S.from = p; $('rg-from').value = 'Ma position (GPS)'; compute(); }); };
     $('rg-go').onclick = function () { var q = $('rg-to').value.trim(); if (q) geocode(q); };
@@ -206,4 +206,19 @@ cat >> route.js <<'EOF'
     $('rg-drive').onclick = startDrive;
     $('rg-stop').onclick = stopDrive;
   }
+
+  st.textContent += '.rg-full{position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:100%!important;z-index:1000!important}';
+  var fs = el('<button id="rg-fs">⛶</button>');
+  fs.style.cssText = 'position:fixed;right:12px;bottom:90px;z-index:1200;background:#fff;color:#111;border:0;border-radius:50%;width:46px;height:46px;font-size:22px;box-shadow:0 2px 8px #0006';
+  var isFull = false;
+  function setFull(on) {
+    isFull = on;
+    var m = getMap(), c = m && m.getContainer();
+    if (c) { c.classList.toggle('rg-full', on); setTimeout(function () { m.invalidateSize(); }, 200); }
+    try { if (on) document.documentElement.requestFullscreen(); else if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {}
+    fs.textContent = on ? '✕' : '⛶';
+  }
+  fs.onclick = function () { setFull(!isFull); };
+  document.addEventListener('fullscreenchange', function () { if (!document.fullscreenElement && isFull) setFull(false); });
+  if (document.body) document.body.appendChild(fs); else document.addEventListener('DOMContentLoaded', function () { document.body.appendChild(fs); });
 })();
