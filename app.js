@@ -368,7 +368,7 @@
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     });
-    const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    const dark = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png?dark=1', {
       maxZoom: 20,
       subdomains: 'abcd',
       attribution: '&copy; OpenStreetMap &copy; <a href="https://carto.com/attributions">CARTO</a>',
