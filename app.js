@@ -1287,6 +1287,28 @@
     });
 
     window.addEventListener('beforeunload', persist);
+
+    // Installation (PWA)
+    let installPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      installPrompt = e;
+      $('#installBtn').hidden = false;
+    });
+    $('#installBtn').addEventListener('click', async () => {
+      if (!installPrompt) return;
+      installPrompt.prompt();
+      await installPrompt.userChoice;
+      installPrompt = null;
+      $('#installBtn').hidden = true;
+    });
+    window.addEventListener('appinstalled', () => {
+      $('#installBtn').hidden = true;
+      toast('Application installée sur votre appareil');
+    });
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      navigator.serviceWorker.register('sw.js').catch((err) => console.warn('Service worker non enregistré', err));
+    }
   }
 
   /* ---------- 17. Démarrage ---------- */

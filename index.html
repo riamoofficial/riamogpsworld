@@ -7,6 +7,8 @@
   <meta name="description" content="Riamo GPS World : suivez vos traceurs GPS dans le monde entier, en temps réel. Historique des trajets, zones de sécurité, alertes et gestion de flotte.">
   <meta name="theme-color" content="#0b1220">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -50,6 +52,7 @@
           <div class="hero-cta">
             <button type="button" class="btn btn-primary btn-lg" data-view="app">Essayer l'application</button>
             <a class="btn btn-ghost btn-lg" href="#tarifs">Voir les tarifs</a>
+            <button type="button" class="btn btn-ghost btn-lg" id="installBtn" hidden>📲 Installer l'application</button>
           </div>
           <ul class="trust">
             <li>✔ Sans installation</li>
