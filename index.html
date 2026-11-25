@@ -3,198 +3,542 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Riamo GPS World – Suivi GPS interactif</title>
-  <meta name="description" content="Carte en direct, géorepérage, alertes et rejeu de trajets. Testez la démo dans votre navigateur.">
-  <meta name="theme-color" content="#2f4bff">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Riamo GPS World – Suivi GPS interactif">
-  <meta property="og:description" content="Carte en direct, géorepérage, alertes et rejeu de trajets.">
-  <meta property="og:image" content="logo.svg">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Snowburst+One&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&text=0123456789&display=swap">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <title>Riamo GPS World — Suivi GPS mondial en temps réel</title>
+  <meta name="description" content="Riamo GPS World : suivez vos traceurs GPS dans le monde entier, en temps réel. Historique des trajets, zones de sécurité, alertes et gestion de flotte.">
+  <meta name="theme-color" content="#0b1220">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <a class="skip" href="#app">Aller à la démo</a>
+<body class="is-site">
 
-  <header class="top">
-    <div class="wrap bar">
-      <a class="brand" href="#top" aria-label="Riamo GPS World, accueil">
-        <img src="logo.svg" alt="" width="28" height="28"><span>Riamo GPS World</span>
+  <!-- ===================== EN-TÊTE ===================== -->
+  <header class="topbar">
+    <div class="topbar-row">
+      <a class="brand" href="#site" data-view="site" aria-label="Riamo GPS World — accueil">
+        <img src="favicon.svg" alt="" width="30" height="30">
+        <span>Riamo <b>GPS World</b></span>
       </a>
-      <nav aria-label="Navigation principale">
-        <a href="#fonctions">Fonctions</a>
-        <a href="#app">Démo</a>
-        <a href="#tarifs">Tarifs</a>
-        <a href="#contact">Contact</a>
+
+      <nav class="view-switch" aria-label="Basculer entre le site et l'application">
+        <button type="button" class="switch-btn is-active" data-view="site" aria-pressed="true">🌐 Site vitrine</button>
+        <button type="button" class="switch-btn" data-view="app" aria-pressed="false">📍 Application GPS</button>
       </nav>
     </div>
+
+    <nav class="site-links" aria-label="Sections du site">
+      <a href="#fonctionnalites">Fonctionnalités</a>
+      <a href="#comment">Comment ça marche</a>
+      <a href="#tarifs">Tarifs</a>
+      <a href="#contact">Contact</a>
+    </nav>
   </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="wrap hero-grid">
-        <div>
-          <p class="eyebrow">Suivi GPS interactif</p>
-          <h1>Gardez un œil sur tout ce qui compte, en temps réel.</h1>
-          <p class="lead">Carte en direct, zones de géorepérage, alertes instantanées et rejeu de trajets. Testez la démo directement dans votre navigateur.</p>
-          <div class="cta">
-            <a class="btn primary" href="#app">Essayer la démo</a>
-            <a class="btn ghost" href="#tarifs">Voir les tarifs</a>
+  <!-- ===================== SITE VITRINE ===================== -->
+  <main id="view-site" class="view">
+
+    <!-- Héro -->
+    <section class="hero" id="site">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">🌍 Suivi GPS mondial</span>
+          <h1>Sachez toujours <span class="grad">où se trouve ce qui compte</span>, partout dans le monde.</h1>
+          <p class="lead">
+            Riamo GPS World réunit vos véhicules, vos proches, vos animaux et vos biens sur une seule carte.
+            Suivi en temps réel, historique des trajets, zones de sécurité et alertes instantanées.
+          </p>
+          <div class="hero-cta">
+            <button type="button" class="btn btn-primary btn-lg" data-view="app">Essayer l'application</button>
+            <a class="btn btn-ghost btn-lg" href="#tarifs">Voir les tarifs</a>
           </div>
+          <ul class="trust">
+            <li>✔ Sans installation</li>
+            <li>✔ Cartes OpenStreetMap</li>
+            <li>✔ Données conservées sur votre appareil</li>
+          </ul>
         </div>
-        <svg class="route" viewBox="0 0 320 220" role="img" aria-label="Exemple de trajet suivi sur une carte">
-          <rect x="1" y="1" width="318" height="218" rx="14" class="route-bg"/>
-          <path class="route-grid" d="M0 70h320M0 140h320M80 0v220M160 0v220M240 0v220"/>
-          <circle cx="215" cy="85" r="52" class="route-zone"/>
-          <path id="rp" class="route-line" d="M30 180C80 190 90 120 140 120S190 60 225 85 280 60 295 30"/>
-          <circle r="7" class="route-dot"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#rp"/></animateMotion></circle>
-        </svg>
+
+        <div class="hero-visual" aria-hidden="true">
+          <svg viewBox="0 0 520 440" role="img" focusable="false">
+            <defs>
+              <linearGradient id="gMap" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#14213d"/>
+                <stop offset="1" stop-color="#0f1a31"/>
+              </linearGradient>
+              <linearGradient id="gRoute" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#3b82f6"/>
+                <stop offset="1" stop-color="#22d3a6"/>
+              </linearGradient>
+            </defs>
+            <rect x="10" y="10" width="500" height="420" rx="28" fill="url(#gMap)" stroke="rgba(255,255,255,.12)"/>
+            <g stroke="rgba(255,255,255,.07)" stroke-width="1">
+              <path d="M10 90H510M10 170H510M10 250H510M10 330H510"/>
+              <path d="M110 10V430M210 10V430M310 10V430M410 10V430"/>
+            </g>
+            <g stroke="rgba(255,255,255,.14)" stroke-width="10" stroke-linecap="round" fill="none">
+              <path d="M30 330 C 140 300, 180 220, 280 230 S 440 150, 490 70"/>
+              <path d="M60 60 C 140 120, 200 140, 250 200 S 330 340, 400 410"/>
+            </g>
+            <circle cx="300" cy="215" r="78" fill="rgba(34,211,166,.10)" stroke="#22d3a6" stroke-width="2" stroke-dasharray="7 7"/>
+            <path class="route" d="M50 320 C 130 300, 190 230, 280 232 S 400 190, 450 120" fill="none" stroke="url(#gRoute)" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="50" cy="320" r="7" fill="#22c55e" stroke="#fff" stroke-width="2"/>
+            <g class="ping">
+              <circle cx="450" cy="120" r="10" fill="#22d3a6"/>
+              <circle class="ring" cx="450" cy="120" r="10" fill="none" stroke="#22d3a6" stroke-width="3"/>
+            </g>
+            <g transform="translate(300 215)">
+              <circle r="15" fill="#fff" stroke="#3b82f6" stroke-width="4"/>
+              <text y="6" text-anchor="middle" font-size="16">🚚</text>
+            </g>
+            <g font-family="system-ui, sans-serif" font-size="13" font-weight="600">
+              <g transform="translate(28 36)">
+                <rect width="190" height="34" rx="17" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.2)"/>
+                <text x="16" y="22" fill="#e6edf7">🚚 Camion 07 · 62 km/h</text>
+              </g>
+              <g transform="translate(300 360)">
+                <rect width="190" height="34" rx="17" fill="rgba(34,211,166,.16)" stroke="rgba(34,211,166,.5)"/>
+                <text x="16" y="22" fill="#7ff0d0">✔ Entrée en zone sûre</text>
+              </g>
+              <g transform="translate(28 382)">
+                <rect width="140" height="34" rx="17" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.2)"/>
+                <text x="16" y="22" fill="#e6edf7">🔋 Batterie 84 %</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="container stats-row">
+        <div><strong>195</strong><span>pays couverts par la carte</span></div>
+        <div><strong>1 s</strong><span>d'actualisation en temps réel</span></div>
+        <div><strong>∞</strong><span>zones de sécurité (offre Pro)</span></div>
+        <div><strong>24/7</strong><span>surveillance et alertes</span></div>
       </div>
     </section>
 
-    <section class="section" id="fonctions">
-      <div class="wrap">
-        <h2>Fonctions principales</h2>
-        <div class="grid3">
-          <article class="card"><h3>Carte en direct</h3><p>Tous vos appareils sur une carte OpenStreetMap, avec infobulles, statut et batterie.</p></article>
-          <article class="card"><h3>Géorepérage</h3><p>Dessinez des zones circulaires et soyez alerté à chaque entrée ou sortie.</p></article>
-          <article class="card"><h3>Historique et rejeu</h3><p>Rejouez un trajet à la vitesse de votre choix grâce au lecteur intégré.</p></article>
-          <article class="card"><h3>Simulation</h3><p>Faites bouger des appareils virtuels pour tester vos zones et vos alertes sans matériel.</p></article>
+    <!-- Fonctionnalités -->
+    <section class="section" id="fonctionnalites">
+      <div class="container">
+        <header class="section-head">
+          <span class="eyebrow">Fonctionnalités</span>
+          <h2>Tout ce qu'il faut pour garder le contrôle</h2>
+          <p>Une plateforme simple pour les particuliers, complète pour les professionnels.</p>
+        </header>
+
+        <div class="grid features">
+          <article class="card feature">
+            <div class="ico">📡</div>
+            <h3>Suivi en temps réel</h3>
+            <p>Visualisez la position, la vitesse et le cap de chaque traceur sur une carte interactive mise à jour en continu.</p>
+          </article>
+          <article class="card feature">
+            <div class="ico">🛣️</div>
+            <h3>Historique des trajets</h3>
+            <p>Rejouez n'importe quel déplacement, consultez la distance parcourue, la vitesse maximale et exportez vos trajets en CSV.</p>
+          </article>
+          <article class="card feature">
+            <div class="ico">🛡️</div>
+            <h3>Zones de sécurité</h3>
+            <p>Dessinez des zones de géorepérage autour de la maison, de l'école ou du dépôt et soyez prévenu à chaque entrée ou sortie.</p>
+          </article>
+          <article class="card feature">
+            <div class="ico">🔔</div>
+            <h3>Alertes instantanées</h3>
+            <p>Franchissement de zone, batterie faible, traceur hors ligne : chaque événement est notifié et conservé dans votre journal.</p>
+          </article>
+          <article class="card feature">
+            <div class="ico">🚚</div>
+            <h3>Gestion de flotte et d'objets</h3>
+            <p>Voitures, camions, vélos, conteneurs, personnes ou animaux : organisez, filtrez et retrouvez chaque élément en un clin d'œil.</p>
+          </article>
+          <article class="card feature">
+            <div class="ico">🔋</div>
+            <h3>Santé des traceurs</h3>
+            <p>Surveillez le niveau de batterie, l'état de connexion et la fraîcheur des données de tous vos appareils.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="section tint" id="app">
-      <div class="wrap">
-        <h2>Démo interactive</h2>
-        <p class="sub">Tout reste dans votre navigateur : rien n’est envoyé à un serveur.</p>
-
-        <div class="app">
-          <aside class="side">
-            <div class="tools">
-              <input id="search" type="search" placeholder="Rechercher un appareil" aria-label="Rechercher un appareil">
-              <select id="statusFilter" aria-label="Filtrer par statut">
-                <option value="all">Tous les statuts</option>
-                <option value="moving">En mouvement</option>
-                <option value="idle">À l’arrêt</option>
-                <option value="offline">Hors ligne</option>
-              </select>
-            </div>
-            <p class="count"><span id="deviceCount">0</span> appareil(s)</p>
-            <ul id="deviceList" class="devices"></ul>
-            <div class="row">
-              <button id="btnSim" class="btn small primary" type="button" aria-pressed="false">Lancer la simulation</button>
-              <button id="btnLocate" class="btn small ghost" type="button">Ma position</button>
-              <button id="btnReset" class="btn small ghost" type="button">Réinitialiser</button>
-            </div>
-          </aside>
-
-          <div class="stage">
-            <div id="map" role="application" aria-label="Carte des appareils"></div>
-
-            <div class="tabs" role="tablist">
-              <button class="tab on" role="tab" data-tab="zones" aria-selected="true">Zones</button>
-              <button class="tab" role="tab" data-tab="alerts" aria-selected="false">Alertes</button>
-              <button class="tab" role="tab" data-tab="history" aria-selected="false">Historique</button>
-            </div>
-
-            <div class="panel" id="tab-zones" role="tabpanel">
-              <div class="row">
-                <label>Rayon <input id="zoneRadius" type="range" min="100" max="2000" step="50" value="500"> <output id="zoneRadiusOut">500 m</output></label>
-                <button id="btnZone" class="btn small primary" type="button">Ajouter une zone au centre</button>
-              </div>
-              <ul id="zoneList" class="plain"></ul>
-            </div>
-
-            <div class="panel" id="tab-alerts" role="tabpanel" hidden>
-              <ul id="alertList" class="plain"></ul>
-              <button id="btnClearAlerts" class="btn small ghost" type="button">Vider les alertes</button>
-            </div>
-
-            <div class="panel" id="tab-history" role="tabpanel" hidden>
-              <div class="row">
-                <select id="historyDevice" aria-label="Appareil à rejouer"></select>
-                <button id="replayPlay" class="btn small primary" type="button">Lecture</button>
-                <select id="replaySpeed" aria-label="Vitesse de rejeu">
-                  <option value="1">×1</option><option value="4" selected>×4</option><option value="10">×10</option>
-                </select>
-              </div>
-              <input id="replayRange" type="range" min="0" max="0" value="0" aria-label="Position dans le trajet">
-              <p id="replayTime" class="count">Aucun trajet</p>
-            </div>
-          </div>
-        </div>
+    <!-- Comment ça marche -->
+    <section class="section alt" id="comment">
+      <div class="container">
+        <header class="section-head">
+          <span class="eyebrow">Comment ça marche</span>
+          <h2>Opérationnel en trois étapes</h2>
+        </header>
+        <ol class="steps">
+          <li>
+            <span class="step-n">1</span>
+            <h3>Ajoutez vos traceurs</h3>
+            <p>Créez un traceur en quelques secondes ou connectez votre flux de données réel (WebSocket ou API REST).</p>
+          </li>
+          <li>
+            <span class="step-n">2</span>
+            <h3>Définissez vos zones</h3>
+            <p>Placez des zones de sécurité sur la carte et choisissez d'être alerté à l'entrée, à la sortie ou aux deux.</p>
+          </li>
+          <li>
+            <span class="step-n">3</span>
+            <h3>Suivez et analysez</h3>
+            <p>Observez les déplacements en direct, rejouez l'historique et réagissez immédiatement aux alertes.</p>
+          </li>
+        </ol>
       </div>
     </section>
 
+    <!-- Tarifs -->
     <section class="section" id="tarifs">
-      <div class="wrap">
-        <h2>Tarifs</h2>
-        <div class="grid3">
-          <article class="card"><h3>Découverte</h3><p class="price">0 €</p><p>3 appareils, historique 24 h, 1 zone.</p></article>
-          <article class="card pick"><h3>Pro</h3><p class="price">19 €<small>/mois</small></p><p>25 appareils, historique 90 jours, zones et alertes illimitées.</p></article>
-          <article class="card"><h3>Entreprise</h3><p class="price">Sur devis</p><p>Flotte illimitée, accès API, assistance dédiée.</p></article>
+      <div class="container">
+        <header class="section-head">
+          <span class="eyebrow">Tarifs</span>
+          <h2>Une offre pour chaque besoin</h2>
+          <p>Tarifs indicatifs de démonstration, à adapter à votre modèle économique.</p>
+        </header>
+
+        <div class="grid pricing">
+          <article class="card plan">
+            <h3>Particulier</h3>
+            <p class="plan-desc">Pour la famille, les animaux et les objets du quotidien.</p>
+            <p class="price"><strong>4,99 €</strong><span>/ mois</span></p>
+            <ul>
+              <li>Jusqu'à 3 traceurs</li>
+              <li>Position actualisée toutes les 10 s</li>
+              <li>Historique sur 30 jours</li>
+              <li>5 zones de sécurité</li>
+              <li>Alertes dans l'application</li>
+            </ul>
+            <button type="button" class="btn btn-ghost btn-block" data-view="app">Commencer</button>
+          </article>
+
+          <article class="card plan popular">
+            <span class="ribbon">Le plus populaire</span>
+            <h3>Pro</h3>
+            <p class="plan-desc">Pour les artisans, commerçants et petites flottes.</p>
+            <p class="price"><strong>19 €</strong><span>/ mois</span></p>
+            <ul>
+              <li>Jusqu'à 25 traceurs</li>
+              <li>Position actualisée toutes les secondes</li>
+              <li>Historique sur 12 mois</li>
+              <li>Zones de sécurité illimitées</li>
+              <li>Alertes e-mail et SMS</li>
+              <li>Export CSV des trajets</li>
+            </ul>
+            <button type="button" class="btn btn-primary btn-block" data-view="app">Essayer gratuitement</button>
+          </article>
+
+          <article class="card plan">
+            <h3>Entreprise</h3>
+            <p class="plan-desc">Pour les grandes flottes et les besoins sur mesure.</p>
+            <p class="price"><strong>Sur devis</strong></p>
+            <ul>
+              <li>Traceurs illimités</li>
+              <li>API et webhooks</li>
+              <li>Connexion SSO et rôles utilisateurs</li>
+              <li>Engagement de disponibilité 99,9 %</li>
+              <li>Support dédié</li>
+            </ul>
+            <a class="btn btn-ghost btn-block" href="#contact">Nous contacter</a>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="section tint" id="contact">
-      <div class="wrap narrow">
-        <h2>Contact</h2>
-        <form id="contactForm" class="form">
-          <label>Nom <input name="name" required autocomplete="name"></label>
-          <label>E-mail <input name="email" type="email" required autocomplete="email"></label>
-          <label>Message <textarea name="message" rows="4" required></textarea></label>
-          <button class="btn primary" type="submit">Envoyer</button>
-          <p class="count">Le bouton ouvre votre application de messagerie.</p>
-        </form>
-        <h3 class="follow">Suivez-nous</h3>
-        <ul class="social">
-          <li><a href="https://www.youtube.com/@Riamogps" target="_blank" rel="noopener noreferrer">YouTube</a></li>
-          <li><a href="https://www.instagram.com/riamogps" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-          <li><a href="https://www.facebook.com/share/19WRNLWLXP/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
-          <li><a href="https://www.tiktok.com/@riamo.gps" target="_blank" rel="noopener noreferrer">TikTok</a></li>
-        </ul>
+    <!-- Appel à l'action -->
+    <section class="cta-band">
+      <div class="container cta-inner">
+        <div>
+          <h2>Prêt à voir le monde bouger ?</h2>
+          <p>Ouvrez l'application, ajoutez un traceur et lancez la simulation en direct.</p>
+        </div>
+        <button type="button" class="btn btn-primary btn-lg" data-view="app">Accéder à l'application</button>
       </div>
     </section>
+
+    <!-- Contact -->
+    <section class="section" id="contact">
+      <div class="container contact-grid">
+        <div>
+          <span class="eyebrow">Contact</span>
+          <h2>Parlons de votre projet</h2>
+          <p>Une question, un devis, un besoin d'intégration ? Écrivez-nous, l'équipe Riamo GPS World vous répond rapidement.</p>
+          <ul class="contact-list">
+            <li>📦 Code source : <a href="https://github.com/riamofficial" target="_blank" rel="noopener">github.com/riamofficial</a></li>
+            <li>🌍 Couverture : mondiale</li>
+            <li>🕒 Surveillance : 24h/24, 7j/7</li>
+          </ul>
+        </div>
+
+        <form class="card contact-form" id="contactForm">
+          <label>Nom
+            <input type="text" name="nom" required autocomplete="name" placeholder="Votre nom">
+          </label>
+          <label>E-mail
+            <input type="email" name="email" required autocomplete="email" placeholder="vous@exemple.com">
+          </label>
+          <label>Offre qui vous intéresse
+            <select name="offre">
+              <option>Particulier</option>
+              <option>Pro</option>
+              <option>Entreprise</option>
+            </select>
+          </label>
+          <label>Message
+            <textarea name="message" rows="4" required placeholder="Décrivez votre besoin…"></textarea>
+          </label>
+          <button type="submit" class="btn btn-primary btn-block">Envoyer le message</button>
+          <p class="form-status" id="contactStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Pied de page -->
+    <footer class="footer">
+      <div class="container footer-grid">
+        <div>
+          <a class="brand" href="#site" data-view="site">
+            <img src="favicon.svg" alt="" width="28" height="28">
+            <span>Riamo <b>GPS World</b></span>
+          </a>
+          <p class="muted">Le suivi GPS mondial, simple et fiable.</p>
+        </div>
+        <div>
+          <h4>Produit</h4>
+          <ul>
+            <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+            <li><a href="#tarifs">Tarifs</a></li>
+            <li><a href="#app" data-view="app">Application GPS</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Ressources</h4>
+          <ul>
+            <li><a href="https://github.com/riamofficial" target="_blank" rel="noopener">GitHub — riamofficial</a></li>
+            <li><a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a></li>
+            <li><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Informations légales</h4>
+          <ul>
+            <li><button type="button" class="link-btn" data-legal="mentions">Mentions légales</button></li>
+            <li><button type="button" class="link-btn" data-legal="privacy">Confidentialité</button></li>
+            <li><button type="button" class="link-btn" data-legal="cgu">Conditions d'utilisation</button></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <span>© <span id="year"></span> Riamo GPS World. Tous droits réservés.</span>
+        <span class="muted">Carte : contributeurs OpenStreetMap</span>
+      </div>
+    </footer>
   </main>
 
-  <footer class="foot">
-    <div class="wrap bar">
-      <span>© <span id="year">2026</span> Riamo GPS World</span>
-      <ul class="social small" aria-label="Réseaux sociaux">
-        <li><a href="https://www.youtube.com/@Riamogps" target="_blank" rel="noopener noreferrer">YouTube</a></li>
-        <li><a href="https://www.instagram.com/riamogps" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-        <li><a href="https://www.facebook.com/share/19WRNLWLXP/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
-        <li><a href="https://www.tiktok.com/@riamo.gps" target="_blank" rel="noopener noreferrer">TikTok</a></li>
-      </ul>
-      <button id="openLegal" class="link" type="button">Mentions légales et confidentialité</button>
-    </div>
-  </footer>
+  <!-- ===================== APPLICATION GPS ===================== -->
+  <main id="view-app" class="view" hidden>
+    <div class="app-shell">
 
-  <dialog id="legal" aria-labelledby="legalTitle">
-    <div class="dlg">
-      <button id="closeLegal" class="x" type="button" aria-label="Fermer">X</button>
-      <h2 id="legalTitle">Mentions légales</h2>
-      <p><strong>Éditeur :</strong> Riamo GPS World. Les coordonnées complètes de l’éditeur (raison sociale, adresse, contact) sont à renseigner avant la mise en ligne.</p>
-      <p><strong>Hébergement :</strong> Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, États-Unis (Cloudflare Pages).</p>
-      <p><strong>Propriété intellectuelle :</strong> l’ensemble des contenus de ce site (textes, logo, éléments graphiques) est protégé. Toute reproduction sans autorisation est interdite.</p>
-      <h2>Politique de confidentialité</h2>
-      <p>La démo de l’application fonctionne entièrement dans votre navigateur : zones, alertes et historiques sont enregistrés localement (stockage du navigateur) et ne sont pas transmis à un serveur.</p>
-      <p>Le formulaire de contact ouvre votre application de messagerie : les informations saisies ne sont envoyées que lorsque vous validez l’e-mail.</p>
-      <p>La fonction « Ma position » demande l’autorisation de votre navigateur et n’est utilisée que pour centrer la carte. Vous pouvez effacer toutes vos données locales avec le bouton « Réinitialiser ».</p>
-      <p>Le fond de carte est fourni par OpenStreetMap et chargé depuis des serveurs tiers.</p>
+      <!-- Panneau latéral -->
+      <aside class="sidebar" aria-label="Panneau de contrôle">
+        <div class="sb-tabs" role="tablist">
+          <button type="button" class="sb-tab is-active" role="tab" data-tab="devices">📍 Traceurs</button>
+          <button type="button" class="sb-tab" role="tab" data-tab="zones">🛡️ Zones</button>
+          <button type="button" class="sb-tab" role="tab" data-tab="history">🛣️ Trajets</button>
+          <button type="button" class="sb-tab" role="tab" data-tab="alerts">🔔 Alertes <span class="badge" id="alertBadge" hidden>0</span></button>
+        </div>
+
+        <div class="sb-body">
+
+          <!-- Traceurs -->
+          <section class="sb-panel is-active" id="tab-devices" role="tabpanel">
+            <div class="toolbar">
+              <input type="search" id="searchInput" placeholder="Rechercher un traceur…" aria-label="Rechercher un traceur">
+              <select id="statusFilter" aria-label="Filtrer par statut">
+                <option value="all">Tous</option>
+                <option value="online">En ligne</option>
+                <option value="offline">Hors ligne</option>
+                <option value="moving">En mouvement</option>
+              </select>
+            </div>
+            <div class="summary-row">
+              <span id="summary" class="muted"></span>
+              <button type="button" class="btn btn-sm btn-primary" id="addDeviceBtn">＋ Ajouter</button>
+            </div>
+            <ul class="dev-list" id="deviceList"></ul>
+            <p class="empty" id="deviceEmpty" hidden>Aucun traceur ne correspond à votre recherche.</p>
+          </section>
+
+          <!-- Zones -->
+          <section class="sb-panel" id="tab-zones" role="tabpanel">
+            <form id="zoneForm" class="stack">
+              <h3 class="panel-title">Nouvelle zone de sécurité</h3>
+              <label>Nom de la zone
+                <input type="text" id="zoneName" required maxlength="40" placeholder="Ex. : Maison, Dépôt, École">
+              </label>
+              <div class="two-cols">
+                <label>Rayon (mètres)
+                  <input type="number" id="zoneRadius" required min="50" max="500000" step="10" value="1000">
+                </label>
+                <label>Alerte
+                  <select id="zoneMode">
+                    <option value="both">Entrée et sortie</option>
+                    <option value="enter">Entrée seulement</option>
+                    <option value="exit">Sortie seulement</option>
+                  </select>
+                </label>
+              </div>
+              <div class="btn-row">
+                <button type="submit" class="btn btn-primary btn-sm">🖱 Placer sur la carte</button>
+                <button type="button" class="btn btn-sm" id="zoneHere">🎯 Au centre de la carte</button>
+              </div>
+            </form>
+            <h3 class="panel-title">Zones configurées</h3>
+            <ul class="zone-list" id="zoneList"></ul>
+            <p class="empty" id="zoneEmpty" hidden>Aucune zone pour le moment.</p>
+          </section>
+
+          <!-- Historique -->
+          <section class="sb-panel" id="tab-history" role="tabpanel">
+            <p class="empty" id="histEmpty">Sélectionnez un traceur dans la liste ou sur la carte pour consulter son historique.</p>
+            <div id="histBody" class="stack" hidden>
+              <h3 class="panel-title">Trajet de <span id="histName"></span></h3>
+              <div class="two-cols">
+                <label>Période
+                  <select id="histRange">
+                    <option value="all">Tout l'historique</option>
+                    <option value="5">5 dernières minutes</option>
+                    <option value="15">15 dernières minutes</option>
+                    <option value="60">Dernière heure</option>
+                  </select>
+                </label>
+                <label class="check">
+                  <input type="checkbox" id="showTrail" checked> Afficher le trajet
+                </label>
+              </div>
+              <dl class="stats stats-3">
+                <div><dt>Points</dt><dd id="hPoints">0</dd></div>
+                <div><dt>Distance</dt><dd id="hDist">0 m</dd></div>
+                <div><dt>Vitesse max</dt><dd id="hMax">0 km/h</dd></div>
+                <div class="wide"><dt>Durée couverte</dt><dd id="hDur">—</dd></div>
+              </dl>
+              <div class="replay">
+                <div class="replay-head">
+                  <button type="button" class="btn btn-sm" id="replayPlay">▶ Rejouer</button>
+                  <span id="replayInfo" class="muted">Déplacez le curseur pour parcourir le trajet.</span>
+                </div>
+                <input type="range" id="replaySlider" min="0" max="0" value="0" step="1" aria-label="Position dans le trajet">
+              </div>
+              <div class="btn-row">
+                <button type="button" class="btn btn-sm" id="exportCsv">⬇ Exporter en CSV</button>
+                <button type="button" class="btn btn-sm btn-danger" id="clearHistory">🗑 Effacer</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Alertes -->
+          <section class="sb-panel" id="tab-alerts" role="tabpanel">
+            <div class="summary-row">
+              <span class="muted" id="alertSummary"></span>
+              <button type="button" class="btn btn-sm" id="clearAlerts">Tout effacer</button>
+            </div>
+            <ul class="alert-list" id="alertList"></ul>
+            <p class="empty" id="alertEmpty" hidden>Aucune alerte. Les entrées/sorties de zone, batteries faibles et déconnexions apparaîtront ici.</p>
+          </section>
+        </div>
+
+        <!-- Barre de simulation -->
+        <div class="sim-bar">
+          <div class="sim-row">
+            <button type="button" class="btn btn-sm btn-primary" id="simToggle">⏸ Pause</button>
+            <label class="sim-speed">Vitesse
+              <select id="simSpeed" aria-label="Accélération de la simulation">
+                <option value="1">×1</option>
+                <option value="5">×5</option>
+                <option value="10" selected>×10</option>
+                <option value="30">×30</option>
+              </select>
+            </label>
+            <button type="button" class="btn btn-sm" id="resetBtn" title="Réinitialiser les données de démonstration">↺ Réinitialiser</button>
+          </div>
+          <div class="sim-status"><span class="dot" id="simDot"></span><span id="simStatus"></span></div>
+        </div>
+      </aside>
+
+      <!-- Carte -->
+      <div class="map-wrap">
+        <div id="map" role="application" aria-label="Carte interactive"></div>
+
+        <div class="map-tools">
+          <button type="button" class="map-btn" id="fitAll" title="Voir tous les traceurs">🌍 Tout voir</button>
+          <button type="button" class="map-btn" id="locateMe" title="Afficher ma position">📌 Ma position</button>
+        </div>
+
+        <div class="place-banner" id="placeBanner" hidden>
+          <span id="placeText"></span>
+          <button type="button" class="btn btn-sm" id="placeCancel">Annuler</button>
+        </div>
+
+        <div class="device-card" id="deviceCard" hidden></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===================== DIALOGUES ===================== -->
+  <dialog id="deviceDialog" class="dialog">
+    <form id="deviceForm" class="stack">
+      <h3>Ajouter un traceur</h3>
+      <label>Nom
+        <input type="text" id="dName" required maxlength="40" placeholder="Ex. : Camion livraison 12">
+      </label>
+      <div class="two-cols">
+        <label>Type
+          <select id="dType">
+            <option value="voiture">🚗 Voiture</option>
+            <option value="camion">🚚 Camion</option>
+            <option value="velo">🚴 Vélo</option>
+            <option value="personne">🚶 Personne</option>
+            <option value="animal">🐕 Animal</option>
+            <option value="conteneur">📦 Conteneur</option>
+          </select>
+        </label>
+        <label>Vitesse initiale (km/h)
+          <input type="number" id="dSpeed" min="0" max="300" step="1" value="30">
+        </label>
+      </div>
+      <div class="two-cols">
+        <label>Latitude
+          <input type="number" id="dLat" min="-90" max="90" step="any" placeholder="48.8566">
+        </label>
+        <label>Longitude
+          <input type="number" id="dLng" min="-180" max="180" step="any" placeholder="2.3522">
+        </label>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-sm" id="dCenter">🎯 Centre de la carte</button>
+        <button type="button" class="btn btn-sm" id="dPick">🖱 Choisir sur la carte</button>
+      </div>
+      <p class="muted small">Sans coordonnées, le traceur est placé au centre de la carte.</p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-close>Annuler</button>
+        <button type="submit" class="btn btn-primary">Ajouter le traceur</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="legalDialog" class="dialog">
+    <div class="stack">
+      <h3 id="legalTitle"></h3>
+      <div id="legalBody" class="legal-body"></div>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-primary" data-close>Fermer</button>
+      </div>
     </div>
   </dialog>
 
+  <!-- Notifications -->
   <div class="toasts" id="toasts" aria-live="polite"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>

@@ -1,28 +1,25 @@
-/* Réglages de Riamo GPS World.
-   Ce fichier est public : n'y mettez jamais de clé API ni de mot de passe. */
+/*
+ * Riamo GPS World — configuration
+ * Modifiez ce fichier sans toucher à app.js.
+ *
+ * dataSource.type :
+ *   'none'       → simulation locale uniquement (par défaut)
+ *   'websocket'  → reçoit des positions en JSON via WebSocket (ex. 'wss://exemple.com/gps')
+ *   'rest'       → interroge une API REST toutes les `intervalMs` millisecondes
+ *
+ * Format JSON attendu (un objet, un tableau d'objets, ou { "devices": [...] }) :
+ *   { "id": "abc123", "name": "Camion 12", "type": "camion",
+ *     "lat": 48.8566, "lng": 2.3522, "speed": 42, "battery": 87, "heading": 90 }
+ * Seuls id, lat et lng sont obligatoires.
+ */
 window.RIAMO_CONFIG = {
-  // Adresse qui reçoit les messages du formulaire de contact (à renseigner)
-  contactEmail: "",
-
-  // Carte (centrée sur Paris par défaut)
-  center: [48.8566, 2.3522],
-  zoom: 12,
-  tiles: {
-    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-    attribution: "&copy; contributeurs OpenStreetMap"
+  dataSource: {
+    type: 'none',
+    url: '',
+    intervalMs: 5000
   },
-
-  // Sauvegarde locale et simulation
-  storageKey: "riamo-gps-world-v1",
-  simIntervalMs: 1500,   // une mise à jour toutes les 1,5 s
-  simStep: 0.0006,       // distance parcourue à chaque mise à jour (degrés)
-  maxHistory: 300,       // points d'historique gardés par appareil
-
-  // Appareils de démonstration (status : moving, idle ou offline)
-  devices: [
-    { id: "d1", name: "Camion 12",         lat: 48.8443, lng: 2.3744, battery: 78, status: "moving" },
-    { id: "d2", name: "Vélo livraison",    lat: 48.8606, lng: 2.3376, battery: 55, status: "moving" },
-    { id: "d3", name: "Voiture Pro",       lat: 48.8738, lng: 2.2950, battery: 91, status: "idle" },
-    { id: "d4", name: "Balise remorque",   lat: 48.8867, lng: 2.3431, battery: 12, status: "offline" }
-  ]
+  map: {
+    defaultCenter: [25, 10],
+    defaultZoom: 2
+  }
 };
