@@ -88,7 +88,7 @@
   function onPos(p) {
     var pos = [p.coords.latitude, p.coords.longitude], m = getMap(), ban = $('tj-banner');
     if (m) {
-      if (!S.me) S.me = L.circleMarker(pos, { radius: 9, color: '#fff', weight: 3, fillColor: '#1a73e8', fillOpacity: 1 }).addTo(m); else S.me.setLatLng(pos);
+      if (window.__rgArrow) window.__rgArrow(pos, p.coords.heading, p.coords.speed); else if (!S.me) S.me = L.circleMarker(pos, { radius: 9, color: '#fff', weight: 3, fillColor: '#1a73e8', fillOpacity: 1 }).addTo(m); else S.me.setLatLng(pos);
       m.setView(pos, Math.max(m.getZoom(), 17));
     }
     var sp = p.coords.speed ? Math.round(p.coords.speed * 3.6) + ' km/h' : '';
@@ -191,4 +191,5 @@
   var tries = 0;
   function wait() { if (document.querySelector('.sb-tab') || tries++ > 10) mount(); else setTimeout(wait, 300); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wait); else wait();
+  window.__tj = { S: S, compute: compute, startDrive: startDrive, stopDrive: stopDrive, search: search };
 })();
