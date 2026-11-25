@@ -30,10 +30,10 @@
 
   function $(id) { return document.getElementById(id); }
   function info(t) { $('tj-info').textContent = t; }
-  function fmtD(m) { return m < 1000 ? (Math.round(m / 10) * 10) + ' m' : (m / 1000).toFixed(1) + ' km'; }
+  function fmtD(m) { if (window.__miles) { var mi = m / 1609.34; return mi < 0.2 ? (Math.round(m * 3.281 / 10) * 10) + ' ft' : mi.toFixed(1) + ' mi'; } return m < 1000 ? (Math.round(m / 10) * 10) + ' m' : (m / 1000).toFixed(1) + ' km'; }
   function fmtT(s) { var m = Math.round(s / 60); return m < 60 ? m + ' min' : Math.floor(m / 60) + ' h ' + (m % 60) + ' min'; }
   function dist(a, b) { return L.latLng(a[0], a[1]).distanceTo(L.latLng(b[0], b[1])); }
-  function say(t) { try { var u = new SpeechSynthesisUtterance(t); u.lang = 'fr-FR'; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {} }
+  function say(t) { if (window.__noVoice) return; try { var u = new SpeechSynthesisUtterance(t); u.lang = 'fr-FR'; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {} }
   function txt(s) {
     var m = s.maneuver || {}, n = s.name ? ' sur ' + s.name : '';
     var mod = { left: 'à gauche', right: 'à droite', 'slight left': 'légèrement à gauche', 'slight right': 'légèrement à droite', 'sharp left': 'franchement à gauche', 'sharp right': 'franchement à droite' }[m.modifier];
