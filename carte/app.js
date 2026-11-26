@@ -166,6 +166,7 @@ function refreshVis() {
     if (id === 'sat') v = f !== 'plan';
     else if (id === 'b3d') v = state.b3d;
     else if (id.indexOf('poicat-') === 0) v = state.cats.indexOf(id.slice(7)) >= 0;
+    else if (id.indexOf('route-') === 0) v = true;
     else if (f === 'plan') v = vis0[id] !== 'none';
     else if (f === 'sat') v = false;
     else v = l.type === 'symbol' || (l.type === 'line' && ROAD.test(id));
@@ -219,7 +220,7 @@ function addPois() {
 function popup(ll, p, c) {
   var nm = p['name:' + state.lang] || p.name || c.n;
   new maplibregl.Popup({ offset: 14 }).setLngLat(ll).setHTML('<b>' + esc(nm) + '</b><br>' + c.e + ' ' + esc(c.n) +
-    '<br><a href="https://www.openstreetmap.org/directions?to=' + ll[1].toFixed(6) + '%2C' + ll[0].toFixed(6) + '" target="_blank">Itinéraire →</a>').addTo(map);
+    '<br><a href="#" onclick="return RIAMO.routeTo(' + ll[0] + ',' + ll[1] + ')">Itinéraire →</a>').addTo(map);
 }
 function activeIds() { return state.cats.map(function (id) { return 'poicat-' + id; }).filter(function (id) { return map.getLayer(id); }); }
 var lt = null;
@@ -421,13 +422,29 @@ async function boot() {
   var v = LS.get('view', { c: [2.3522, 48.8566], z: 13.5, p: 0, b: 0 });
   map = new maplibregl.Map({ container: 'map', style: style, center: v.c, zoom: v.z, pitch: v.p, bearing: v.b, maxPitch: 75, attributionControl: { compact: true } });
   window.RIAMO = { map: map };
+  try { map.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); } catch (e) {}
   map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right');
   map.addControl(new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: true, showAccuracyCircle: true }), 'top-right');
   map.addControl(new maplibregl.ScaleControl(), 'bottom-left');
+  function fail(step, e) {
+    var bx = $('err');
+    if (!bx) { bx = document.createElement('div'); bx.id = 'err'; bx.style.cssText = 'position:fixed;top:70px;left:8px;right:8px;z-index:20;background:#b3261e;color:#fff;padding:10px;border-radius:10px;font:12px monospace;white-space:pre-wrap'; bx.onclick = function () { bx.remove(); }; document.body.appendChild(bx); }
+    bx.textContent += step + ' : ' + (e && e.message ? e.message : e) + '\n';
+  }
+  map.on('error', function (ev) { var m = ev && ev.error && ev.error.message; if (m && !/AJAX|fetch|Network|abort|404/i.test(m)) fail('carte', ev.error); });
   map.on('load', function () {
-    map.getStyle().layers.forEach(function (l) { vis0[l.id] = (l.layout && l.layout.visibility) || 'visible'; });
-    add3D(); addSat(); addPois();
-    applyLang(state.lang); setFond(state.fond); wireUI(); refreshVis();
+    try { wireUI(); } catch (e) { fail('interface', e); }
+    try { map.getStyle().layers.forEach(function (l) { vis0[l.id] = (l.layout && l.layout.visibility) || 'visible'; }); } catch (e) {}
+    try { add3D(); } catch (e) { fail('3D', e); }
+    try { addSat(); } catch (e) { fail('satellite', e); }
+    try { addPois(); } catch (e) { fail('lieux', e); }
+    try { applyLang(state.lang); } catch (e) { fail('langue', e); }
+    try { setFond(state.fond); refreshVis(); } catch (e) { fail('fond', e); }
+    try {
+      var sb = document.createElement('button'); sb.textContent = '🛰️'; sb.title = 'Plan / Satellite / Hybride';
+      sb.onclick = function () { var o = ['plan', 'sat', 'hyb']; setFond(o[(o.indexOf(state.fond) + 1) % 3]); };
+      $('fab').appendChild(sb);
+    } catch (e) {}
     if (map.getPitch() > 5) $('b3').classList.add('on');
   });
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw-carte.js', { scope: './' }).catch(function () {});
