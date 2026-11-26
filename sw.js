@@ -1,4 +1,4 @@
-const CACHE = 'riamo-20261125b';
+const CACHE = 'riamo-20261126r';
 self.addEventListener('install', function () { self.skipWaiting(); });
 self.addEventListener('activate', function (e) {
   e.waitUntil(caches.keys().then(function (keys) {

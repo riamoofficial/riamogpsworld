@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Réparer Riamo GPS World</title>
+<style>
+body{margin:0;padding:20px;background:#0b1220;color:#e8eefc;font:16px system-ui,sans-serif}
+h1{font-size:22px;margin:0 0 14px}
+#log div{padding:8px 0;border-bottom:1px solid #25324f}
+a.b{display:block;margin-top:14px;padding:14px;border-radius:14px;text-align:center;text-decoration:none;font-weight:700;color:#04121f;background:linear-gradient(90deg,#22d3a8,#38bdf8)}
+a.b.g{background:#121c33;color:#e8eefc;border:1px solid #25324f}
+</style>
+</head>
+<body>
+<h1>🔧 Réparation de l’application</h1>
+<div id="log"></div>
+<a class="b" id="go" href="carte/" style="display:none">Ouvrir la carte 3D</a>
+<a class="b g" id="home" href="./" style="display:none">Ouvrir le site vitrine</a>
+<script>
+(async function () {
+  var log = document.getElementById('log');
+  function add(ok, t) { var d = document.createElement('div'); d.textContent = (ok ? '✓ ' : '• ') + t; log.appendChild(d); }
+  try {
+    var regs = await navigator.serviceWorker.getRegistrations();
+    for (var i = 0; i < regs.length; i++) { await regs[i].unregister(); }
+    add(true, regs.length + ' ancien(s) service worker supprimé(s)');
+  } catch (e) { add(false, 'Service workers : ' + e.message); }
+  try {
+    var keys = await caches.keys();
+    for (var j = 0; j < keys.length; j++) { await caches.delete(keys[j]); }
+    add(true, keys.length + ' cache(s) vidé(s)');
+  } catch (e) { add(false, 'Caches : ' + e.message); }
+  add(true, 'Tes cartes hors ligne et tes réglages sont conservés.');
+  add(true, 'Terminé. Ferme l’application installée, puis rouvre-la.');
+  var t = '?maj=' + Date.now();
+  document.getElementById('go').href = 'carte/' + t; document.getElementById('home').href = './' + t;
+  document.getElementById('go').style.display = 'block'; document.getElementById('home').style.display = 'block';
+})();
+</script>
+</body>
+</html>
