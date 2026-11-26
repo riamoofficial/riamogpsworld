@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Riamo GPS World — Carte 3D</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css">
+<style>
+:root{--bg:#0b1220;--card:#121c33;--line:#25324f;--txt:#e8eefc;--mut:#93a3c4;--acc:#22d3a8;--acc2:#38bdf8}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font:15px system-ui,sans-serif}
+#map{position:fixed;inset:0}
+#top{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);left:8px;right:64px;z-index:5}
+#q{width:100%;box-sizing:border-box;padding:12px 16px;border-radius:26px;border:0;font-size:16px;background:#fff;color:#111;box-shadow:0 3px 12px #0006}
+#qres{list-style:none;margin:6px 0 0;padding:0;background:#fff;color:#111;border-radius:14px;max-height:40vh;overflow:auto;display:none;box-shadow:0 3px 12px #0006}
+#qres li{padding:12px;border-bottom:1px solid #e3e8ee;font-size:14px}
+#fab{position:fixed;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 84px);z-index:5;display:flex;flex-direction:column;gap:10px}
+#fab button{width:52px;height:52px;border-radius:50%;border:0;background:#fff;color:#111;font:700 15px sans-serif;box-shadow:0 2px 10px #0006}
+#fab button.on{background:linear-gradient(90deg,var(--acc),var(--acc2));color:#04121f}
+#nav{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+#nav button{flex:1;padding:14px 4px;border:0;background:transparent;color:var(--mut);font-size:14px}
+#nav button.on{color:var(--acc);font-weight:700}
+#sheet{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 50px);z-index:6;background:var(--card);border-radius:20px 20px 0 0;max-height:58vh;overflow:auto;padding:14px 16px 22px;display:none;box-shadow:0 -4px 16px #0006}
+.pn{display:none}.pn.on{display:block}
+h4{margin:14px 0 8px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+h4:first-child{margin-top:0}
+.seg{display:flex;gap:6px}.seg button{flex:1}
+.btn,.seg button,.chip,select,#sheet input[type=text],#sheet input[type=url]{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0f1a30;color:var(--txt);font-size:14px}
+.seg button.on,.chip.on{background:linear-gradient(90deg,var(--acc),var(--acc2));color:#04121f;border:0;font-weight:700}
+.btn.main{background:linear-gradient(90deg,var(--acc),var(--acc2));color:#04121f;border:0;font-weight:700}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0}
+.row input[type=range]{flex:1}
+select{width:100%}
+#chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.item{padding:11px 4px;border-bottom:1px solid var(--line)}.item small{display:block;color:var(--mut);margin-top:2px}
+.muted{color:var(--mut);font-size:13px}
+.bar{height:8px;border-radius:4px;background:#0f1a30;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+.maplibregl-ctrl-top-right{top:calc(env(safe-area-inset-top,0px) + 60px)}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="top"><input id="q" type="search" placeholder="Rechercher une adresse, une ville…"><ul id="qres"></ul></div>
+<div id="fab"><button id="b3" title="Vue 3D">3D</button></div>
+<section id="sheet">
+  <div class="pn" id="p-carte">
+    <h4>Fond de carte</h4>
+    <div class="seg" id="seg-fond"><button data-f="plan" class="on">Plan</button><button data-f="sat">Satellite</button><button data-f="hyb">Hybride</button></div>
+    <h4>Perspective et 3D</h4>
+    <label class="row"><span>Bâtiments en 3D</span><input type="checkbox" id="c3d" checked></label>
+    <label class="row"><span>Inclinaison</span><input type="range" id="rp" min="0" max="75" value="0"></label>
+    <button class="btn" id="rn">↑ Remettre le nord</button>
+    <h4>Langue de la carte</h4>
+    <select id="lang"></select>
+  </div>
+  <div class="pn" id="p-lieux">
+    <h4>Catégories</h4>
+    <div id="chips"></div>
+    <input type="text" id="lf" placeholder="Filtrer par nom…" style="width:100%;box-sizing:border-box;margin-bottom:6px">
+    <div id="plist"></div>
+  </div>
+  <div class="pn" id="p-off">
+    <h4>Télécharger la zone visible</h4>
+    <div class="row"><span>Détail maximal</span><select id="zmax" style="width:auto"><option value="12">Ville (z12)</option><option value="13">Quartier (z13)</option><option value="14" selected>Rues (z14)</option></select></div>
+    <div id="est" class="muted"></div>
+    <div class="row"><button class="btn main" id="dl">⬇️ Télécharger</button><button class="btn" id="dlc">Annuler</button></div>
+    <div class="bar"><i id="dlbar"></i></div><div id="dlmsg" class="muted"></div>
+    <h4>Zones enregistrées</h4><div id="regions" class="muted">Aucune</div>
+    <h4>Fichiers .pmtiles (pays, grandes régions)</h4>
+    <input type="file" id="pmfile" accept=".pmtiles" style="width:100%;margin-bottom:8px">
+    <div class="row"><input type="url" id="pmurl" placeholder="https://…/pays.pmtiles" style="flex:1"><button class="btn" id="pmgo">Télécharger</button></div>
+    <div class="bar"><i id="pmbar"></i></div><div id="pmmsg" class="muted"></div>
+    <div id="archives" class="muted"></div>
+    <h4>Options</h4>
+    <label class="row"><span>Mode hors ligne forcé</span><input type="checkbox" id="foff"></label>
+    <div id="store" class="muted"></div>
+  </div>
+</section>
+<nav id="nav"><button data-p="carte">🗺️ Carte</button><button data-p="lieux">📍 Lieux</button><button data-p="off">⬇️ Hors ligne</button></nav>
+<script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js"></script>
+<script src="app.js?v=1"></script>
+</body>
+</html>
